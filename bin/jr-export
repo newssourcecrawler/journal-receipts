@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+UNIT="$1"
+SINCE="$2"
+
+if [ -z "$UNIT" ] || [ -z "$SINCE" ]; then
+  echo "usage: jr-export <systemd-unit> <since>"
+  echo 'example: jr-export ffmpeg-worker "10 minutes ago"'
+  exit 1
+fi
+
+journalctl -u "$UNIT" -o cat --since "$SINCE" \
+  | grep '"dir":"rcpt"'
