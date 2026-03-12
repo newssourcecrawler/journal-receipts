@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+FILE="$1"
+
+if [ -z "$FILE" ]; then
+  echo "usage: jr-summary <ndjson-file>"
+  exit 1
+fi
+
+sed -n 's/.*"kind":"\([^"]*\)".*/\1/p' "$FILE" \
+  | sort \
+  | uniq -c \
+  | awk '{printf "%-20s %s\n",$2,$1}'
