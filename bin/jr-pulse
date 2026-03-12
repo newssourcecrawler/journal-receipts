@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+UNIT="$1"
+SINCE="$2"
+
+if [ -z "$UNIT" ] || [ -z "$SINCE" ]; then
+  echo "usage: jr-pulse <systemd-unit> <since>"
+  echo 'example: jr-pulse ffmpeg-worker "5 minutes ago"'
+  exit 1
+fi
+
+journalctl -u "$UNIT" -o cat --since "$SINCE" \
+  | grep '"dir":"rcpt"' \
+  | sed -n 's/.*"ts":"\([^"]*\)".*/\1/p' \
+  | cut -c12-19 \
+  | sort \
+  | uniq -c \
+  | while read count sec; do
+      bar=$(printf "%${count}s" | tr ' ' '#')
+      printf "%s  %s\n" "$sec" "$bar"
+    done
