@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+UNIT="$1"
+
+if [ -z "$UNIT" ]; then
+  echo "usage: jr-tail <systemd-unit>"
+  exit 1
+fi
+
+journalctl -u "$UNIT" -o cat -f \
+  | grep '"dir":"rcpt"'
